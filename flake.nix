@@ -11,31 +11,33 @@
       # Zig flake helper
       # Check the flake.nix in zig2nix project for more options:
       # <https://github.com/Cloudef/zig2nix/blob/master/flake.nix>
-      env = zig2nix.outputs.zig-env.${system} { zig = zig2nix.outputs.packages.${system}.zig."0.13.0".bin; };
+      env = zig2nix.outputs.zig-env.${system} { zig = zig2nix.outputs.packages.${system}.zig-0_13_0; };
       pkgs = env.pkgs;
-      system-triple = env.lib.zigTripleFromString system;
-    in with builtins; with env.lib; with env.pkgs.lib; rec {
-      # nix build .#target.{zig-target}
-      # e.g. nix build .#target.x86_64-linux-gnu
-      packages.target = genAttrs allTargetTriples (target: env.packageForTarget target {
+    in {
+      packages.default = env.package rec {
         src = pkgs.fetchFromGitHub {
           owner = "ghostty-org";
           repo = "ghostty";
-          rev = "a2445359c40ba66f36157359c0ae92509b7f005d";
-          hash = "sha256-JGvxWgyrZqo86/8LMJbiu/MlB0I+rEzlP+Kcp1QMpbY=";
+          rev = "d3fd2b02e71f3eaecd310b246ee64a26a59b78e3";
+          hash = "sha256-H+rS9UDb1Qd0bTUxppNgiIHLzr4sR/LnDox4VhR5Q1w=";
         };
 
         nativeBuildInputs = with env.pkgs; [
           git
           ncurses
           pandoc
+          pkg-config
+          gobject-introspection
           wrapGAppsHook4
+          blueprint-compiler
+          libxml2
+          gettext
 
           wayland-scanner
           wayland-protocols
         ];
 
-        buildInputs = with env.pkgsForTarget target; [
+        buildInputs = with env.pkgs; [
           libGL
           bzip2
           expat
@@ -46,6 +48,7 @@
           oniguruma
           zlib
 
+          libadwaita
           gtk4
           glib
           gsettings-desktop-schemas
@@ -55,15 +58,15 @@
           xorg.libXi
           xorg.libXrandr
 
+          gtk4-layer-shell
           wayland
         ];
 
+        zigWrapperLibs = buildInputs;
+
         zigBuildZonLock = ./build.zig.zon2json-lock;
 
-        zigBuildFlags = [ "-Doptimize=ReleaseFast" "-Dgtk-x11=true" "-Dgtk-wayland=true" "-Dgtk-adwaita=false" ];
-      });
-
-      # nix build .
-      packages.default = packages.target.${system-triple};
+        zigBuildFlags = [ "-Doptimize=ReleaseFast" "-Dgtk-x11=true" "-Dgtk-wayland=false" ];
+      };
     }));
 }
