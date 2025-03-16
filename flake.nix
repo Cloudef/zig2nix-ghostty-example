@@ -26,7 +26,6 @@
           git
           ncurses
           pandoc
-          pkg-config
           gobject-introspection
           wrapGAppsHook4
           blueprint-compiler
