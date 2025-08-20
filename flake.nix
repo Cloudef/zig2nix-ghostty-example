@@ -11,15 +11,15 @@
       # Zig flake helper
       # Check the flake.nix in zig2nix project for more options:
       # <https://github.com/Cloudef/zig2nix/blob/master/flake.nix>
-      env = zig2nix.outputs.zig-env.${system} { zig = zig2nix.outputs.packages.${system}.zig-0_13_0; };
+      env = zig2nix.outputs.zig-env.${system} { zig = zig2nix.outputs.packages.${system}.zig-0_14_1; };
       pkgs = env.pkgs;
     in {
       packages.default = env.package rec {
         src = pkgs.fetchFromGitHub {
           owner = "ghostty-org";
           repo = "ghostty";
-          rev = "d3fd2b02e71f3eaecd310b246ee64a26a59b78e3";
-          hash = "sha256-H+rS9UDb1Qd0bTUxppNgiIHLzr4sR/LnDox4VhR5Q1w=";
+          rev = "b52879b467a1e335b83593ebef1c92abb4fe1b63";
+          hash = "sha256-RWGoaDrsVCGf/y31oiFun1lsw8eibGwAXNBErXcffbk=";
         };
 
         nativeBuildInputs = with env.pkgs; [
@@ -38,19 +38,32 @@
 
         buildInputs = with env.pkgs; [
           libGL
+
           bzip2
           expat
           fontconfig
           freetype
           harfbuzz
           libpng
+          libxml2
           oniguruma
+          simdutf
           zlib
+
+          glslang
+          spirv-cross
+
+          libxkbcommon
 
           libadwaita
           gtk4
           glib
+          gobject-introspection
           gsettings-desktop-schemas
+
+          gst_all_1.gst-plugins-base
+          gst_all_1.gst-plugins-good
+          gst_all_1.gstreamer
 
           xorg.libX11
           xorg.libXcursor
@@ -65,7 +78,7 @@
 
         zigBuildZonLock = ./build.zig.zon2json-lock;
 
-        zigBuildFlags = [ "-Doptimize=ReleaseFast" "-Dgtk-x11=true" "-Dgtk-wayland=false" ];
+        zigBuildFlags = [ "-Doptimize=ReleaseFast" "-Dgtk-x11=true" "-Dgtk-wayland=true" ];
       };
     }));
 }
