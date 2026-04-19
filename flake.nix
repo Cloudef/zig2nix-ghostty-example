@@ -65,10 +65,10 @@
           gst_all_1.gst-plugins-good
           gst_all_1.gstreamer
 
-          xorg.libX11
-          xorg.libXcursor
-          xorg.libXi
-          xorg.libXrandr
+          libx11
+          libxcursor
+          libxi
+          libxrandr
 
           gtk4-layer-shell
           wayland
